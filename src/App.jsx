@@ -1,6 +1,7 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { AuthContextProvider } from "./context/AuthContext";
 import { Cart, Home, LogIn, PageNotFound, Profile } from "./components";
+import { CartContextProvider } from "./context/CartContext";
 
 function App() {
   const router = createBrowserRouter([
@@ -28,7 +29,9 @@ function App() {
   return (
     <>
       <AuthContextProvider>
-        <RouterProvider router={router} />
+        <CartContextProvider>
+          <RouterProvider router={router} />
+        </CartContextProvider>
       </AuthContextProvider>
     </>
   );

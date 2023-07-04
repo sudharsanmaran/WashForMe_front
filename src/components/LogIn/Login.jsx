@@ -31,6 +31,7 @@ function LogIn() {
 
     try {
       console.log(phoneNumber);
+      api.interceptors.c
      await api.post(
         SENT_OTP_URL,
         JSON.stringify({ phone: phoneNumber }),
