@@ -33,7 +33,10 @@ function Cart() {
               {[...itemsMap.values()].map((item) => {
                 return (
                   <li key={item.id}>
+                  <div style={{ marginRight: 10, marginBottom: 5 }}>
                     {item.name}
+                  </div>
+                  <div style={{ marginRight: 10, marginBottom: 5 }}>
                     <button
                       onClick={() => handleIcrement(item)}
                       style={{ marginRight: 5, marginLeft: 5 }}
@@ -51,11 +54,10 @@ function Cart() {
                       {" "}
                       -{" "}
                     </button>
+                  </div>
                   </li>
                 );
               })}
-              <br />
-              <br />
             </>
           );
         })}

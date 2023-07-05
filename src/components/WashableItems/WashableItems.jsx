@@ -71,16 +71,19 @@ function WashableItems() {
           {items.map((item) => {
             return (
               <li key={item.id}>
-                <span style={{ marginRight: 10 }}>{item.name}</span>
+                <div style={{ marginRight: 10, marginBottom: 5 }}>{item.name}</div>
+                <div style={{ marginRight: 10, marginBottom: 5 }}>
                 price:{" "}
                 {selectedCategory
                   ? Number(item.price) + Number(selectedCategory.extra_per_item)
                   : item.price}
+                </div>
                 <div>
                   <button onClick={() => handleAddToCart(item)}>
                     add to cart
                   </button>
                 </div>
+                <br/>
               </li>
             );
           })}
