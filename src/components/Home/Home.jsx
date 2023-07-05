@@ -4,7 +4,6 @@ import WashableItems from "../WashableItems/WashableItems";
 import NavBar from "../NavBar/NavBar";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { CategoryContextProvider } from "../../context/CategoryContext";
 
 function Home() {
   const navigate = useNavigate();
@@ -18,10 +17,8 @@ function Home() {
   return (
     <>
       <NavBar />
-      <CategoryContextProvider>
-        <WashCategories />
-        <WashableItems />
-      </CategoryContextProvider>
+      <WashCategories />
+      <WashableItems />
     </>
   );
 }

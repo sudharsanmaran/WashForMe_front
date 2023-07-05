@@ -4,9 +4,10 @@ import { CategoryContext, CartContext } from "../../context";
 
 function WashableItems() {
   const ITEMS_URL = "/core/api/items";
-  const [items, setItems] = useState([{}]);
+  const [items, setItems] = useState([]);
   const { selectedCategory } = useContext(CategoryContext);
-  const { setCartItems, setTotalCount, setItemCount } = useContext(CartContext);
+  const { setCartItems, setTotalCount, setTotalPrice } =
+    useContext(CartContext);
 
   useEffect(() => {
     getItems();
@@ -23,48 +24,68 @@ function WashableItems() {
 
   function addToCart(item) {
     setCartItems((prevItems) => {
-      console.log(prevItems)
       const updatedItems = new Map(prevItems);
-      updatedItems.set(item.id, item)
-      console.log(updatedItems);
+    
+      if (updatedItems.has(selectedCategory.id)) {
+        updateExistingItem();
+      } else {
+        addNewItem(new Map());
+      }
+    
       return updatedItems;
-    });
-  }
-
-  function upadteItemCount(item) {
-    setItemCount((prevItemCount) => {
-      const updatedItemCount = new Map(prevItemCount);
-      const count = updatedItemCount.get(item.id) || 0;
-      updatedItemCount.set(item.id, count + 1);
-      return updatedItemCount;
+    
+      function updateExistingItem() {
+        const categoryMap = updatedItems.get(selectedCategory.id);
+        if (categoryMap.has(item.id)) {
+          const currentItem = categoryMap.get(item.id);
+          currentItem.extras = { count: currentItem.extras.count + 1 };
+        } else {
+          addNewItem(categoryMap)
+        }
+      }
+    
+      function addNewItem(map) {
+        item.extras = { count: 1 };
+        map.set(item.id, item);
+        updatedItems.set(selectedCategory.id, map);
+      }
     });
   }
 
   const handleAddToCart = (item) => {
     addToCart(item);
     setTotalCount((prev) => prev + 1);
-    upadteItemCount(item);
+    setTotalPrice(
+      (prev) =>
+        prev +
+        Number(item.price) +
+        Number(selectedCategory ? selectedCategory.extra_per_item : 0)
+    );
   };
-
+  console.log(items[0]?.id, "items");
   return (
     <>
       <h3>WashableItems</h3>
-      <ul>
-        {items.map((item) => {
-          return (
-            <>
+      {items.length && (
+        <ul>
+          {items.map((item) => {
+            return (
               <li key={item.id}>
                 <span style={{ marginRight: 10 }}>{item.name}</span>
                 price:{" "}
                 {selectedCategory
                   ? Number(item.price) + Number(selectedCategory.extra_per_item)
                   : item.price}
+                <div>
+                  <button onClick={() => handleAddToCart(item)}>
+                    add to cart
+                  </button>
+                </div>
               </li>
-              <button onClick={() => handleAddToCart(item)}>add to cart</button>
-            </>
-          );
-        })}
-      </ul>
+            );
+          })}
+        </ul>
+      )}
     </>
   );
 }

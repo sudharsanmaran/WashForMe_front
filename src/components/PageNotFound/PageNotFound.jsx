@@ -15,7 +15,7 @@ function PageNotFound() {
   }, [navigate]);
 
   return (
-    <div>Page Not   Found</div>
+    <div>Page Not Found</div>
   )
 }
 
