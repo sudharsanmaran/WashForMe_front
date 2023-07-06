@@ -10,21 +10,20 @@ const initialState = {
 };
 
 export const fetchWashCategory = createAsyncThunk(
-  "washCategory/fetchWashCategory", () => {
-    return PrivateApi.get(CATEGORIES_URL).then(response => (
-      response.data
-    ));
+  "washCategory/fetchWashCategory",
+  () => {
+    return PrivateApi.get(CATEGORIES_URL).then(
+      (response) => response.data);
   }
 );
 
-
-export const washCategoryslice = createSlice({
+const washCategoryslice = createSlice({
   name: "washCategory",
   initialState: initialState,
   reducers: {
     updateSelectedCategory: (state, action) => {
-        state.selectedCategory = action.payload
-    }
+      state.selectedCategory = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchWashCategory.pending, (state) => {
@@ -34,7 +33,7 @@ export const washCategoryslice = createSlice({
       state.loading = false;
       state.categories = action.payload;
       state.selectedCategory = action.payload[0];
-      
+      state.error = "";
     });
     builder.addCase(fetchWashCategory.rejected, (state, action) => {
       state.loading = false;

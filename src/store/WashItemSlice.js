@@ -3,37 +3,33 @@ import { ITEMS_URL } from "../constant";
 import { PrivateApi } from "../api/axios";
 
 const initialState = {
-  loadig: false,
+  loading: false,
   items: [],
-  error: '',
+  error: "",
 };
 
-export const fetchWashItem = createAsyncThunk(
-  "washItem/fetchWashItem", () => {
-    return PrivateApi.get(ITEMS_URL).then(response => (
-      response.data
-    ));
-  }
-);
+export const fetchWashItem = createAsyncThunk("washItem/fetchWashItem", () => {
+  return PrivateApi.get(ITEMS_URL).then((response) => response.data);
+});
 
-export const washItemslice = createSlice({
-  name: 'washItem',
-  initialState,
+const washItemslice = createSlice({
+  name: "washItem",
+  initialState: initialState,
   reducers: {},
-  extraReducer: builder => {
-    builder.addcase(fetchWashItem.pending, (state) =>{
-      state.loadig = true;
-    })
-    builder.addcase(fetchWashItem.fulfilled, (state, action) =>{
-      state.loadig = false;
-      console.log(action.payload, 'action.payload')
-      state.items = action.payload
-    })
-    builder.addcase(fetchWashItem.rejected, (state, action) =>{
-      state.loadig = false;
-      state.error = action.error.message
-    })
-  }
+  extraReducers: (builder) => {
+    builder.addCase(fetchWashItem.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchWashItem.fulfilled, (state, action) => {
+      state.loading = false;
+      state.items = action.payload;
+      state.error = "";
+    });
+    builder.addCase(fetchWashItem.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+  },
 });
 
 export default washItemslice.reducer;

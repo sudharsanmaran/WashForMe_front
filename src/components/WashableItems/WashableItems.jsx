@@ -98,8 +98,8 @@
 
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../store/CartItemSlice";
 import { fetchWashItem } from "../../store/WashItemSlice";
+import { asyncAddToCart, fetchCartItems } from "../../store/CartItemSlice";
 
 function WashableItems() {
   const dispatch = useDispatch();
@@ -112,10 +112,11 @@ function WashableItems() {
 
   useEffect(() => {
     dispatch(fetchWashItem());
+    dispatch(fetchCartItems());
   }, []);
 
   const handleAddToCart = (item) => {
-    dispatch(addToCart(item, selectedCategory));
+    dispatch(asyncAddToCart({item, selectedCategory, dispatch}));
   };
 
   return (

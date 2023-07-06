@@ -1,11 +1,13 @@
-import React, { useContext } from "react";
 
-import { CartContext, CategoryContext } from "../../context";
+import React from "react";
+import { useSelector } from "react-redux";
 
 function Cart() {
-  const { cartItems, totalPrice, totalCount } = useContext(CartContext);
+  const cartItems = useSelector((state) => state.cartItem.cartItems);
+  const totalPrice = useSelector((state) => state.cartItem.totalprice);
+  const totalCount = useSelector((state) => state.cartItem.totalCount);
 
-  const { allCategories } = useContext(CategoryContext);
+  const allCategories = useSelector(state => state.washCategory.categories)
 
   const handleIcrement = (item) => {
     console.log(item);

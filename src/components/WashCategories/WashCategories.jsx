@@ -10,13 +10,11 @@ import {
 function WashCategories() {
   const dispatch = useDispatch();
 
-  // const allCategories = useSelector((state) => state.washCategory.categories);
-  const allCategories = []
+  const allCategories = useSelector((state) => state.washCategory.categories);
 
-  // const selectedCategory = useSelector(
-  //   (state) => state.washCategory.selectedCategory
-  // );
-  const selectedCategory = []
+  const selectedCategory = useSelector(
+    (state) => state.washCategory.selectedCategory
+  );
 
   useEffect(() => {
     dispatch(fetchWashCategory());
