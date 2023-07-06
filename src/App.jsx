@@ -5,6 +5,8 @@ import {
   CartContextProvider,
   AuthContextProvider,
 } from "./context";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 function App() {
   const router = createBrowserRouter([
@@ -30,15 +32,15 @@ function App() {
     },
   ]);
   return (
-    <>
-      <AuthContextProvider>
-        <CategoryContextProvider>
-          <CartContextProvider>
-            <RouterProvider router={router} />
-          </CartContextProvider>
-        </CategoryContextProvider>
-      </AuthContextProvider>
-    </>
+    <Provider store={store}>
+    <AuthContextProvider>
+      <CategoryContextProvider>
+        <CartContextProvider>
+          <RouterProvider router={router} />
+        </CartContextProvider>
+      </CategoryContextProvider>
+    </AuthContextProvider>
+    </Provider>
   );
 }
 

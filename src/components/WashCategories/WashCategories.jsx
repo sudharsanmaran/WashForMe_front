@@ -1,38 +1,29 @@
-import { useEffect, useContext } from "react";
-import { PrivateApi } from "../../api/axios";
+import { useEffect } from "react";
 import "./WashCategories.css";
-import { CategoryContext } from "../../context/CategoryContext";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchWashCategory,
+  updateSelectedCategory,
+} from "../../store/WashCategorySlice";
+
 
 function WashCategories() {
-  const CATEGORIES_URL = "/core/api/categories";
-  const {
-    updateSelectedCategory,
-    selectedCategory,
-    allCategories,
-    setAllCategories,
-  } = useContext(CategoryContext);
+  const dispatch = useDispatch();
 
-  const getCategories = async () => {
-    try {
-      const response = await PrivateApi.get(CATEGORIES_URL);
-      setAllCategories(response.data);
-      // select first one initialy
-      console.log('called')
-      if (!selectedCategory){
+  // const allCategories = useSelector((state) => state.washCategory.categories);
+  const allCategories = []
 
-        updateSelectedCategory(response.data[0]);
-      }
-    } catch (e) {
-      console.log(e.message);
-    }
-  };
+  // const selectedCategory = useSelector(
+  //   (state) => state.washCategory.selectedCategory
+  // );
+  const selectedCategory = []
 
   useEffect(() => {
-    getCategories();
+    dispatch(fetchWashCategory());
   }, []);
 
   function handleCategorySelect(category) {
-    updateSelectedCategory(category);
+    dispatch(updateSelectedCategory(category));
   }
 
   return (
