@@ -26,71 +26,45 @@ export const postaddToCart = createAsyncThunk(
   }
 );
 
+export const patchCart = createAsyncThunk(
+  "cartItem/patchCart",
+  async ({patch_data, cartItemId}) => {
+    return PrivateApi.patch(CART_ITEMS_URL+`${cartItemId}`, patch_data).then(
+      (response) => response.data
+    );
+  }
+);
+
 export const asyncAddToCart = createAsyncThunk(
   "cartItem/handleAddToCart",
-  async ({ item, selectedCategory: washCategory, dispatch }) => {
-    dispatch(addToCart({ item, washCategory }));
+  async ({ item, wash_category, dispatch }) => {
     const post_data = {
       item: item.id,
-      wash_category: washCategory.id,
+      wash_category: wash_category.id,
       quantity: 1,
     };
-    dispatch(postaddToCart(post_data));
+    console.log(post_data, "postAddToCart");
+    dispatch(postaddToCart(post_data)
+    ).then(() => dispatch(fetchCartItems()));
+  }
+);
+
+export const asyncRemoveFromCart = createAsyncThunk(
+  "cartItem/handleRemoveFromCart",
+  async ({cartItem, dispatch}) => {
+    const patch_data = {
+      item: cartItem.item.id,
+      wash_category: cartItem.wash_category.id,
+      quantity: cartItem.quantity - 1,
+    };
+    dispatch(patchCart({patch_data, cartItemId: cartItem.id})).then(() => dispatch(fetchCartItems()));
   }
 );
 
 const cartItem = createSlice({
   name: "cartItem",
   initialState,
-  reducers: {
-    addToCart: (state, action) => {
-      const { item, washCategory } = action.payload;
-      const price = Number(item.price) + Number(washCategory.extra_per_item);
-      state.totalCount += 1;
-      state.totalprice += price;
-
-      const existingCartItem = state.cartItems.find(
-        (cartItem) =>
-          cartItem.washCategory === washCategory.id && cartItem.item === item.id
-      );
-
-      if (existingCartItem) {
-        existingCartItem.quantity += 1;
-        existingCartItem.price += price;
-      } else {
-        const data = {
-          item: item.id,
-          washCategory: washCategory.id,
-          quantity: 1,
-          price: price,
-        };
-        state.cartItems.push(data);
-      }
-    },
-
-    removeFromCart: (state, action) => {
-      const { item, washCategory } = action.payload;
-      const price = Number(item.price) + Number(washCategory.extra_per_item);
-      state.cartItems.totalCount -= 1;
-      state.cartItems.totalprice -= price;
-
-      const existingCartItem = state.cartItems.find(
-        (cartItem) =>
-          cartItem.washCategory === washCategory.id && cartItem.item === item.id
-      );
-
-      if (existingCartItem && existingCartItem.quantity > 1) {
-        existingCartItem.price -= price;
-        existingCartItem.quantity -= 1;
-      } else {
-        state.cartItems = state.cartItems.filter(
-          (cartItem) =>
-            cartItem.item !== item.id &&
-            cartItem.washCategory !== washCategory.id
-        );
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchCartItems.pending, (state) => {
       state.loading = true;
@@ -115,5 +89,4 @@ const cartItem = createSlice({
   },
 });
 
-export const { addToCart, removeFromCart } = cartItem.actions;
 export default cartItem.reducer;

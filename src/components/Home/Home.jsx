@@ -4,8 +4,11 @@ import WashableItems from "../WashableItems/WashableItems";
 import NavBar from "../NavBar/NavBar";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { useDispatch } from "react-redux";
+import { fetchUserDetails } from "../../store/UserSlice";
 
 function Home() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthContext);
 
@@ -13,10 +16,13 @@ function Home() {
     if (!isAuthenticated) {
       navigate("/login");
     }
+
+    dispatch(fetchUserDetails());
   }, [isAuthenticated, navigate]);
+
   return (
     <>
-      <NavBar />
+      <h3 >Home</h3>
       <WashCategories />
       <WashableItems />
     </>

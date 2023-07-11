@@ -34,10 +34,13 @@ function WashCategories() {
             return (
               <li
                 key={category.id}
+              >
+              <button className={isActive ? "selected" : ""}
                 onClick={() => handleCategorySelect(category)}
-                className={isActive ? "selected" : ""}
+                style={{marginTop:5}}
               >
                 {category.name}, price per item: {category.extra_per_item}
+              </button>
               </li>
             );
           })}

@@ -1,52 +1,71 @@
-
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  asyncAddToCart,
+  asyncRemoveFromCart,
+  fetchCartItems,
+} from "../../store/CartItemSlice";
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cartItem.cartItems);
   const totalPrice = useSelector((state) => state.cartItem.totalprice);
   const totalCount = useSelector((state) => state.cartItem.totalCount);
 
-  const allCategories = useSelector(state => state.washCategory.categories)
+  const groupedCartItems = cartItems.reduce((result, obj) => {
+    const category = obj.wash_category.name;
+    if (!result[category]) {
+      result[category] = [];
+    }
+    result[category].push(obj);
+    return result;
+  }, {});
 
-  const handleIcrement = (item) => {
-    console.log(item);
+  useEffect(() => {
+    dispatch(fetchCartItems());
+  }, []);
+
+  const handleIcrement = ({ item, wash_category }) => {
+    dispatch(asyncAddToCart({ item, wash_category, dispatch }));
   };
 
-  const handleDecrement = (item) => {
-    console.log(item);
+  const handleDecrement = (cartItem) => {
+    dispatch(asyncRemoveFromCart({cartItem, dispatch}));
   };
-
+  console.log(groupedCartItems,'ihvbn vfds');
   return (
     <>
       <h3>Cart</h3>
-      {cartItems && (
+      {groupedCartItems && (
         <ul>
-          {Array.from(cartItems).map(([categoryId, itemsMap]) => {
+          {Object.entries(groupedCartItems).map(([categoryName, value]) => {
+            console.log(categoryName, value,'ihfds');
             return (
-              <React.Fragment key={categoryId}>
-                <h4>
-                  {
-                    allCategories.find((category) => category.id === categoryId)
-                      ?.name
-                  }
-                </h4>
-                {[...itemsMap.values()].map((item) => {
+              <React.Fragment key={categoryName}>
+                <h4>{categoryName}</h4>
+                {value.map((cartItem) => {
                   return (
                     <li
-                      key={item.id}
+                      key={cartItem.id}
                       style={{
                         marginTop: -15,
-                        marginBottom: 15,
+                        marginBottom: 25,
                         marginLeft: 20,
                       }}
                     >
                       <div style={{ marginRight: 10, marginBottom: 5 }}>
-                        {item.name}
+                        {cartItem.item.name}
                       </div>
                       <div style={{ marginRight: 10, marginBottom: 5 }}>
                         <button
-                          onClick={() => handleIcrement(item)}
+                          onClick={() =>
+                            handleIcrement({
+                              item: cartItem.item,
+                              wash_category: cartItem.wash_category,
+                            })
+                          }
                           style={{ marginRight: 5, marginLeft: 5 }}
                         >
                           {" "}
@@ -55,7 +74,7 @@ function Cart() {
                         <span
                           style={{ width: 20, marginRight: 5, marginLeft: 5 }}
                         >
-                          {item.extras.count}
+                          {cartItem.quantity}
                         </span>
                         <button
                           style={{
@@ -64,11 +83,14 @@ function Cart() {
                             marginBottom: 5,
                             mariginTop: 10,
                           }}
-                          onClick={() => handleDecrement(item)}
+                          onClick={() =>
+                            handleDecrement(cartItem)
+                          }
                         >
                           {" "}
                           -{" "}
                         </button>
+                        <div>price: {cartItem.price}</div>
                       </div>
                     </li>
                   );
@@ -80,7 +102,7 @@ function Cart() {
       )}
       <h4>total price: {totalPrice}</h4>
       <h4>total count: {totalCount}</h4>
-      <button>book time slot</button>
+      <button onClick={()=>navigate('/bookTimeslots')}>book time slot</button>
     </>
   );
 }

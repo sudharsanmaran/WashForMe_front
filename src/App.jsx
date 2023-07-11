@@ -1,30 +1,44 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Cart, Home, LogIn, PageNotFound, Profile } from "./components";
-import {
-  CategoryContextProvider,
-  CartContextProvider,
-  AuthContextProvider,
-} from "./context";
+import { AuthContextProvider } from "./context";
 import { Provider } from "react-redux";
 import { store } from "./store";
+import BookTimeSlots from "./components/TimeSlots/BookTimeSlots";
+import Address from "./components/Address/Address";
+import NavBar from "./components/NavBar/NavBar";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Home />,
-    },
-    {
-      path: "/profile",
-      element: <Profile />,
-    },
-    {
-      path: "/login",
-      element: <LogIn />,
-    },
-    {
-      path: "/cart",
-      element: <Cart />,
+      element: <NavBar />,
+      children: [
+        {
+          path: "/",
+          element: <Home />,
+        },
+        {
+          path: "/profile",
+          element: <Profile />,
+        },
+        {
+          path: "/login",
+          element: <LogIn />,
+        },
+        {
+          path: "/cart",
+          element: <Cart />,
+        },
+
+        {
+          path: "/bookTimeSlots",
+          element: <BookTimeSlots />,
+        },
+        {
+          path: "/address",
+          element: <Address />,
+        },
+      ],
     },
     {
       path: "*",
@@ -33,13 +47,9 @@ function App() {
   ]);
   return (
     <Provider store={store}>
-    <AuthContextProvider>
-      <CategoryContextProvider>
-        <CartContextProvider>
-          <RouterProvider router={router} />
-        </CartContextProvider>
-      </CategoryContextProvider>
-    </AuthContextProvider>
+      <AuthContextProvider>
+        <RouterProvider router={router} />
+      </AuthContextProvider>
     </Provider>
   );
 }
