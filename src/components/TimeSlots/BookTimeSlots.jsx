@@ -105,7 +105,10 @@ const updateRazopayStatus = async ({
 
 const getPrimaryAddressId = (addresses, type) => {
   return addresses.find((address) => {
-    if (AddressType.PICKUP_AND_DELIVERY === address.type && address.is_primary) {
+    if (
+      AddressType.PICKUP_AND_DELIVERY === address.type &&
+      address.is_primary
+    ) {
       return address;
     } else {
       if (address.type === type && address.is_primary) return address;
@@ -116,7 +119,9 @@ const getPrimaryAddressId = (addresses, type) => {
 function BookTimeSlots() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { address: addresses } = useSelector((state) => state.userDetails.userDetails);
+  const { address: addresses } = useSelector(
+    (state) => state.userDetails.userDetails
+  );
 
   const [state, setState] = useState({
     selectedDate: "",
@@ -209,7 +214,9 @@ function BookTimeSlots() {
           deliveryBookingId.current
         );
 
-        const paymentInfo = await fetchRazorpayPaymentInfo(orderResponse.data.id);
+        const paymentInfo = await fetchRazorpayPaymentInfo(
+          orderResponse.data.id
+        );
 
         razorpayPaymentInfo.current = paymentInfo.data;
 
@@ -278,7 +285,9 @@ function BookTimeSlots() {
 
       <h3>Time Slots</h3>
       {state.timeSlots.size > 0 &&
-        Object.keys(state.isTimeslotBooked).some((key) => !state.isTimeslotBooked[key]) &&
+        Object.keys(state.isTimeslotBooked).some(
+          (key) => !state.isTimeslotBooked[key]
+        ) &&
         Array.from(state.timeSlots.keys()).map((date) => {
           const isActive = date === state.selectedDate;
           return (
@@ -304,17 +313,19 @@ function BookTimeSlots() {
           />
         </>
       )}
-      {state.selectedDate && state.isTimeslotBooked.pickup && !state.isTimeslotBooked.delivery && (
-        <>
-          <ListTimeslots
-            timeslots={state.timeSlots.get(state.selectedDate)}
-            name={"Delivery"}
-            bookTimeSlots={({ type, timeslotId }) =>
-              handleBookTimeslot(type, timeslotId)
-            }
-          />
-        </>
-      )}
+      {state.selectedDate &&
+        state.isTimeslotBooked.pickup &&
+        !state.isTimeslotBooked.delivery && (
+          <>
+            <ListTimeslots
+              timeslots={state.timeSlots.get(state.selectedDate)}
+              name={"Delivery"}
+              bookTimeSlots={({ type, timeslotId }) =>
+                handleBookTimeslot(type, timeslotId)
+              }
+            />
+          </>
+        )}
       {state.isTimeslotBooked.pickup && state.isTimeslotBooked.delivery && (
         <RazorpayButton
           disabled={!state.isTimeslotBooked.delivery}
