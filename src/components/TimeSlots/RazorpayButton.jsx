@@ -1,25 +1,7 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import useRazorpay from "react-razorpay";
-import { PrivateApi } from "../../api/axios";
-import { RAZORPAY_PAYMENT_STATUS_URL } from "../../constant";
 
-const updatestatus = async ({
-  razorpay_order_id,
-  razorpay_payment_id,
-  razorpay_signature,
-}) => {
-    try {
-        return await PrivateApi.post(RAZORPAY_PAYMENT_STATUS_URL, {
-            razorpay_order_id: razorpay_order_id,
-            razorpay_payment_id: razorpay_payment_id,
-            razorpay_signature: razorpay_signature,
-        });
-      } catch (err) {
-        throw new Error("Something went wrong while updating razorpay payment status.");
-      }
-};
-
-export default function RazorpayButton({ razorpay }) {
+export default function RazorpayButton({ razorpay, updateRazopayStatus, disabled }) {
   const Razorpay = useRazorpay();
   const handlePayment = useCallback(() => {
     const options = {
@@ -29,8 +11,7 @@ export default function RazorpayButton({ razorpay }) {
       name: "WashForMe",
       order_id: razorpay?.id,
       handler: (res) => {
-        console.log(res, "razorpay payment");
-        updatestatus(res);
+        updateRazopayStatus(res);
       },
       notes: {
         ...razorpay?.notes,
@@ -46,7 +27,7 @@ export default function RazorpayButton({ razorpay }) {
 
   return (
     <div className="App">
-      <button onClick={handlePayment}>Make Payment</button>
+      <button style={{marginTop: 5}} disabled={disabled} onClick={handlePayment}>Make Payment</button>
     </div>
   );
 }

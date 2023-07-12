@@ -8,10 +8,16 @@ function NavBar() {
           <Link to="/profile">Profile</Link>
         </li>
         <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
           <Link to="/cart">Cart</Link>
         </li>
         <li>
           <Link to="/login">Login</Link>
+        </li>
+        <li>
+          <Link to="/orders">Orders</Link>
         </li>
       </ul>
     </nav>
