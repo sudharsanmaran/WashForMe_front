@@ -34,11 +34,11 @@ function Cart() {
   const handleDecrement = (cartItem) => {
     dispatch(asyncRemoveFromCart({cartItem, dispatch}));
   };
-  console.log(groupedCartItems,'ihvbn vfds');
   return (
     <>
       <h3>Cart</h3>
-      {groupedCartItems && (
+      {Object.keys(groupedCartItems).length ? (<>
+
         <ul>
           {Object.entries(groupedCartItems).map(([categoryName, value]) => {
             console.log(categoryName, value,'ihfds');
@@ -99,10 +99,11 @@ function Cart() {
             );
           })}
         </ul>
-      )}
       <h4>total price: {totalPrice}</h4>
       <h4>total count: {totalCount}</h4>
       <button onClick={()=>navigate('/bookTimeslots')}>book time slot</button>
+      </>
+      ): 'no items avialble' }
     </>
   );
 }

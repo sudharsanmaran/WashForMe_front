@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
-import { PICKUP_TIMESLOTS_URL, UPDATE_TIMESLOTS_URL } from "../../constant";
+import { useEffect, useRef, useState } from "react";
+import {
+  ADDRESS_URL,
+  AddressType,
+  BOOK_TIMESLOT_URL,
+  CART_TO_ORDER_URL,
+  PICKUP_TIMESLOTS_URL,
+  RAZORPAY_PAYMENT_INFO_URL,
+  UPDATE_TIMESLOTS_URL,
+  delivery_TIMESLOTS_URL,
+} from "../../constant";
 import { PrivateApi } from "../../api/axios";
 import ListTimeslots from "./ListTimeslots";
 import { fetchUserDetails } from "../../store/UserSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import Address from "../Address/Address";
 import AddressModal from "../AddressModal/AddressModal";
+import RazorpayButton from "./RazorpayButton";
 
 const updateTimeSlots = async () => {
   try {
@@ -29,37 +37,95 @@ const fetchPickupTimeSlots = async (shopId) => {
 
     return timeslotMap;
   } catch (err) {
-    throw new Error("Something went wrong while fetching pickup time slots.");
+    throw new Error("Something went wrong while fetching time slots.");
   }
 };
 
-const getaddressId = (userDetails) => {
-  return null
+const fetchDeliveryTimeSlots = async (pickupBookingId) => {
+  try {
+    const response = await PrivateApi.get(delivery_TIMESLOTS_URL, {
+      params: { pickup_booking_id: pickupBookingId },
+    });
 
+    const timeslotMap = response.data.reduce((acc, item) => {
+      acc.set(item.date, item.timeslots);
+      return acc;
+    }, new Map());
+
+    return timeslotMap;
+  } catch (err) {
+    throw new Error("Something went wrong while fetching time slots.");
+  }
 };
 
 const bookTimeSlots = async (type, timeslotId, addressId) => {
   try {
-
-    await PrivateApi.post(PICKUP_TIMESLOTS_URL, {
-      type,
-      timeslotId,
-      addressId,
+    return await PrivateApi.post(BOOK_TIMESLOT_URL, {
+      booking_type: type,
+      time_slot: timeslotId,
+      address: addressId,
     });
   } catch (err) {
     throw new Error("Something went wrong while booking selected time slot.");
   }
 };
 
+const fetchRazorpayPaymentInfo = async (orderId) => {
+  try {
+    return await PrivateApi.get(RAZORPAY_PAYMENT_INFO_URL, {
+      params: { order_id: orderId },
+    });
+  } catch (err) {
+    throw new Error("Something went wrong while updating Address.");
+  }
+};
+
+const postAddress = async (data) => {
+  try {
+    return await PrivateApi.post(ADDRESS_URL, data);
+  } catch (err) {
+    throw new Error("Something went wrong while updating Address.");
+  }
+};
+
+const postOrder = async (pickupBookingId, deliveryBookingId) => {
+  try {
+    return await PrivateApi.post(CART_TO_ORDER_URL, {
+      pickup_booking: pickupBookingId,
+      delivery_booking: deliveryBookingId,
+    });
+  } catch (err) {
+    throw new Error("Something went wrong while updating Order.");
+  }
+};
+
+const getaddressId = (address, type) => {
+  return address.find((add) => {
+    if (AddressType.PICKUP_AND_DELIVERY == add.type && add.is_primary) {
+      return add;
+    } else {
+      if (AddressType.type == type && add.is_primary) return add;
+    }
+  })?.id;
+};
+
 function BookTimeSlots() {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+
   const address = useSelector((state) => state.userDetails.userDetails.address);
+
   const [selectedDate, setSelectedDate] = useState("");
-  const [rederAddress, setRenderaddress] = useState(false);
+  const [renderAddress, setRenderaddress] = useState(false);
+  const [isPickupBooked, setIsPickupBooked] = useState(false);
+  const [isDeliveryBooked, setIsDeliveryBooked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const [pickupTimeSlots, setPickupTimeSlots] = useState(new Map());
+  const [TimeSlots, setTimeSlots] = useState(new Map());
+
+  const pickupBookingId = useRef();
+  const deliveryBookingId = useRef();
+  const razorpayPaymentInfo = useRef();
+
   const shopId = 1;
 
   useEffect(() => {
@@ -71,7 +137,7 @@ function BookTimeSlots() {
       .then(([_, timeslotMap]) => {
         const iterator = timeslotMap.keys();
         setSelectedDate(iterator.next().value);
-        setPickupTimeSlots(timeslotMap);
+        setTimeSlots(timeslotMap);
         setIsLoading(false);
         setError("");
       })
@@ -86,47 +152,110 @@ function BookTimeSlots() {
   };
 
   const handleBookTimeslot = (type, timeslotId) => {
-
-    const addressId = getaddressId(address)
+    const addressId = getaddressId(address, type);
 
     if (!addressId) {
-      setRenderaddress(true)
-      return; 
+      if (!address.length) {
+        setRenderaddress(true);
+        return;
+      }
+      // else render modal to select available address
     }
 
-    bookTimeSlots(type, timeslotId, addressId)
+    const response = bookTimeSlots(type, timeslotId, addressId);
 
-  }
+    response.then((response) => {
+      if (type === AddressType.PICKUP) {
+        pickupBookingId.current = response.data.id;
+
+        fetchDeliveryTimeSlots(pickupBookingId.current).then((data) => {
+          setTimeSlots(data);
+          const iterator = data.keys();
+          setSelectedDate(iterator.next().value);
+          setIsPickupBooked(true);
+        });
+      } else {
+        deliveryBookingId.current = response.data.id;
+
+        postOrder(pickupBookingId.current, deliveryBookingId.current).then(
+          (response) => {
+            fetchRazorpayPaymentInfo(response.data.id).then((paymentInfo) => {
+              console.log(paymentInfo, "payment");
+              razorpayPaymentInfo.current = paymentInfo.data.razorpay;
+              setIsDeliveryBooked(true);
+            });
+          }
+        );
+      }
+    });
+  };
+
+  const handlePostAddress = (data) => {
+    try {
+      const response = postAddress(data);
+      response.then(() => {
+        dispatch(fetchUserDetails());
+        setRenderaddress(false);
+      });
+    } catch (err) {
+      setError(error.message);
+      setRenderaddress(false);
+    }
+  };
 
   return (
     <>
-      {rederAddress && <AddressModal/>}
-      <h3>Select Date</h3>
-      {pickupTimeSlots.size > 0 &&
-        Array.from(pickupTimeSlots.keys()).map((date) => {
+      {renderAddress && (
+        <AddressModal
+          postAddress={handlePostAddress}
+          setOpen={setRenderaddress}
+          open={renderAddress}
+        />
+      )}
+
+      {TimeSlots.size > 0 &&
+        (!isPickupBooked || !isDeliveryBooked) &&
+        Array.from(TimeSlots.keys()).map((date) => {
           const isActive = date === selectedDate;
           return (
-            <button
-              key={date}
-              style={{ marginLeft: 5, marginTop: 5 }}
-              className={isActive ? "selected" : ""}
-              onClick={() => handleDateSelection(date)}
-            >
-              {date}
-            </button>
+            <>
+              <h3>Select Date</h3>
+              <button
+                key={date}
+                style={{ marginLeft: 5, marginTop: 5 }}
+                className={isActive ? "selected" : ""}
+                onClick={() => handleDateSelection(date)}
+              >
+                {date}
+              </button>
+            </>
           );
         })}
 
-      {selectedDate && (
+      {selectedDate && !isPickupBooked && (
         <>
           <ListTimeslots
-            timeslots={pickupTimeSlots.get(selectedDate)}
+            timeslots={TimeSlots.get(selectedDate)}
             name={"Pickup"}
             bookTimeSlots={({ type, timeslotId }) =>
               handleBookTimeslot(type, timeslotId)
             }
           />
         </>
+      )}
+      {selectedDate && isPickupBooked && !isDeliveryBooked && (
+        <>
+          <ListTimeslots
+            timeslots={TimeSlots.get(selectedDate)}
+            name={"Delivery"}
+            bookTimeSlots={({ type, timeslotId }) =>
+              handleBookTimeslot(type, timeslotId)
+            }
+          />
+        </>
+      )}
+      {isPickupBooked && isDeliveryBooked && (
+        <RazorpayButton razorpay={razorpayPaymentInfo.current} />
       )}
     </>
   );
