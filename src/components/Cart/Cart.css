@@ -1,0 +1,37 @@
+.ul-cls {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ul-cls li {
+  padding: 0;
+  margin: 5px;
+  list-style: none;
+}
+
+.card {
+  position: relative;
+  border: 1px solid;
+  width: 300px;
+  height: 300px;
+  margin: 5px;
+  border-radius: 25%;
+}
+.item-name {
+  position: inherit;
+  top: 68%;
+  left: 18%;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.item-price {
+  position: inherit;
+  top: 70%;
+  left: 22%;
+  font-size: 25px;
+  font-weight: 800;
+}
+.category-item-container{
+    display: flex;
+}
