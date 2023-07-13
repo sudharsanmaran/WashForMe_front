@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWashItem } from "../../store/WashItemSlice";
 import { asyncAddToCart, fetchCartItems } from "../../store/CartItemSlice";
+import './WashableItems.css';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 function WashableItems() {
   const dispatch = useDispatch();
@@ -23,27 +25,32 @@ function WashableItems() {
 
   return (
     <>
-      <h3>WashableItems</h3>
+      <h3 className="heading">WashableItems</h3>
       {items.length && (
-        <ul>
+        <ul className="ul-cls ">
           {items.map((item) => {
             return (
               <li key={item.id}>
-                <div style={{ marginRight: 10, marginBottom: 5 }}>
+              <div className="card">
+              <img src={item.image}>
+
+              </img>
+                <div className="item-name">
                   {item.name}
                 </div>
-                <div style={{ marginRight: 10, marginBottom: 5 }}>
-                  price:{" "}
+                <div className="item-price" style={{ marginRight: 10, marginBottom: 5 }}>
+                  ${" "}
                   {selectedCategory
                     ? Number(item.price) +
                       Number(selectedCategory.extra_per_item)
                     : item.price}
                 </div>
-                <div>
-                  <button onClick={() => handleAddToCart(item)}>
-                    add to cart
+                <div className="cart-btn-container">
+                  <button className="cart-btn" onClick={() => handleAddToCart(item)}>
+                  <AddShoppingCartIcon/>
                   </button>
                 </div>
+              </div>
                 <br />
               </li>
             );

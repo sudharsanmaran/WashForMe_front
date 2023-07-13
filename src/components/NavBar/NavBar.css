@@ -1,0 +1,25 @@
+.nav-bar {
+    position: relative;
+    background: linear-gradient(to right, transparent, #4890c7, #4890c7, transparent);
+  }
+  
+
+.nav-bar ul {
+  padding-left: 35%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.nav-bar li {
+  padding: 0;   
+  margin: 10px;
+  list-style: none;
+}
+
+.nav-bar a{
+    margin: 5px;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+}

@@ -6,6 +6,7 @@ import {
   fetchCartItems,
 } from "../../store/CartItemSlice";
 import { useNavigate } from "react-router-dom";
+import empty_cart from "./empty_cart.png";
 
 function Cart() {
   const dispatch = useDispatch();
@@ -32,79 +33,86 @@ function Cart() {
   };
 
   const handleDecrement = (cartItem) => {
-    dispatch(asyncRemoveFromCart({cartItem, dispatch}));
+    dispatch(asyncRemoveFromCart({ cartItem, dispatch }));
   };
   return (
-    <>
-      <h3>Cart</h3>
-      {Object.keys(groupedCartItems).length ? (<>
-
-        <ul>
-          {Object.entries(groupedCartItems).map(([categoryName, value]) => {
-            console.log(categoryName, value,'ihfds');
-            return (
-              <React.Fragment key={categoryName}>
-                <h4>{categoryName}</h4>
-                {value.map((cartItem) => {
-                  return (
-                    <li
-                      key={cartItem.id}
-                      style={{
-                        marginTop: -15,
-                        marginBottom: 25,
-                        marginLeft: 20,
-                      }}
-                    >
-                      <div style={{ marginRight: 10, marginBottom: 5 }}>
-                        {cartItem.item.name}
-                      </div>
-                      <div style={{ marginRight: 10, marginBottom: 5 }}>
-                        <button
-                          onClick={() =>
-                            handleIcrement({
-                              item: cartItem.item,
-                              wash_category: cartItem.wash_category,
-                            })
-                          }
-                          style={{ marginRight: 5, marginLeft: 5 }}
-                        >
-                          {" "}
-                          +{" "}
-                        </button>
-                        <span
-                          style={{ width: 20, marginRight: 5, marginLeft: 5 }}
-                        >
-                          {cartItem.quantity}
-                        </span>
-                        <button
-                          style={{
-                            marginRight: 5,
-                            marginLeft: 5,
-                            marginBottom: 5,
-                            mariginTop: 10,
-                          }}
-                          onClick={() =>
-                            handleDecrement(cartItem)
-                          }
-                        >
-                          {" "}
-                          -{" "}
-                        </button>
-                        <div>price: {cartItem.price}</div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </React.Fragment>
-            );
-          })}
-        </ul>
-      <h4>total price: {totalPrice}</h4>
-      <h4>total count: {totalCount}</h4>
-      <button onClick={()=>navigate('/bookTimeslots')}>book time slot</button>
-      </>
-      ): 'no items avialble' }
-    </>
+    <div className="container">
+      <h3 className="heading">Cart</h3>
+      {Object.keys(groupedCartItems).length ? (
+        <>
+          <ul>
+            {Object.entries(groupedCartItems).map(([categoryName, value]) => {
+              return (
+                <React.Fragment key={categoryName}>
+                  <h4>{categoryName}</h4>
+                  {value.map((cartItem) => {
+                    return (
+                      <li
+                        key={cartItem.id}
+                        style={{
+                          marginTop: -15,
+                          marginBottom: 25,
+                          marginLeft: 20,
+                        }}
+                      >
+                        <div style={{ marginRight: 10, marginBottom: 5 }}>
+                          {cartItem.item.name}
+                        </div>
+                        <div style={{ marginRight: 10, marginBottom: 5 }}>
+                          <button
+                            onClick={() =>
+                              handleIcrement({
+                                item: cartItem.item,
+                                wash_category: cartItem.wash_category,
+                              })
+                            }
+                            style={{ marginRight: 5, marginLeft: 5 }}
+                          >
+                            {" "}
+                            +{" "}
+                          </button>
+                          <span
+                            style={{
+                              width: 20,
+                              marginRight: 5,
+                              marginLeft: 5,
+                            }}
+                          >
+                            {cartItem.quantity}
+                          </span>
+                          <button
+                            style={{
+                              marginRight: 5,
+                              marginLeft: 5,
+                              marginBottom: 5,
+                              mariginTop: 10,
+                            }}
+                            onClick={() => handleDecrement(cartItem)}
+                          >
+                            {" "}
+                            -{" "}
+                          </button>
+                          <div>price: {cartItem.price}</div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </React.Fragment>
+              );
+            })}
+          </ul>
+          <h4>total price: {totalPrice}</h4>
+          <h4>total count: {totalCount}</h4>
+          <button onClick={() => navigate("/bookTimeslots")}>
+            book time slot
+          </button>
+        </>
+      ) : (
+        <div className="no-cart-img-container">
+          <img src={empty_cart} alt="My Image" />
+        </div>
+      )}
+    </div>
   );
 }
 

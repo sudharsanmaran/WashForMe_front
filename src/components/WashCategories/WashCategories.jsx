@@ -5,7 +5,7 @@ import {
   fetchWashCategory,
   updateSelectedCategory,
 } from "../../store/WashCategorySlice";
-
+import { Button } from "@mui/material";
 
 function WashCategories() {
   const dispatch = useDispatch();
@@ -25,32 +25,32 @@ function WashCategories() {
   }
 
   return (
-    <>
-      <h3>WashCategories</h3>
+    <div className="catogery-container">
+      <h3 className="heading">WashCategories</h3>
       {allCategories.length && (
-        <ul>
-          {allCategories.map((category) => {
-            const isActive = selectedCategory?.id === category.id;
-            return (
-              <li
-                key={category.id}
-              >
-              <button className={isActive ? "selected" : ""}
-                onClick={() => handleCategorySelect(category)}
-                style={{marginTop:5}}
-              >
-                {category.name}, price per item: {category.extra_per_item}
-              </button>
-              </li>
-            );
-          })}
-        </ul>
+        <div>
+          <ul className="ul-cls">
+            {allCategories.map((category) => {
+              const isActive = selectedCategory?.id === category.id;
+              return (
+                <li key={category.id}>
+                  <button
+                    className={`btn-cls ${isActive && "active"}`}
+                    onClick={() => handleCategorySelect(category)}
+                    style={{ marginTop: 5 }}
+                  >
+                    <span className="centered-text">{category.name}</span>
+                    <span className="small-right-text">
+                      $: {category.extra_per_item}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       )}
-      <h4>
-        selected categories price:
-        {selectedCategory?.extra_per_item}
-      </h4>
-    </>
+    </div>
   );
 }
 

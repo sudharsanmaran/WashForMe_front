@@ -22,9 +22,10 @@ function Home() {
 
   return (
     <>
-      <h3 >Home</h3>
+    <div className="container">
       <WashCategories />
       <WashableItems />
+    </div>
     </>
   );
 }

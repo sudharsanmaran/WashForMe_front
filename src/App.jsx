@@ -3,9 +3,10 @@ import { Cart, Home, LogIn, PageNotFound, Profile } from "./components";
 import { AuthContextProvider } from "./context";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import BookTimeSlots from "./components/TimeSlots/BookTimeSlots";
+import BookTimeSlots from "./components/Booking/BookTimeSlots";
 import Address from "./components/Address/Address";
 import NavBar from "./components/NavBar/NavBar";
+import './App.css';
 
 function App() {
   const router = createBrowserRouter([

@@ -1,0 +1,12 @@
+.heading{
+    font-size: 25px;
+    font-weight: 900;
+    text-align: center;
+  }
+
+  .container{
+    position: relative;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+  
