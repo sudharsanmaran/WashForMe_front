@@ -6,7 +6,7 @@ import { store } from "./store";
 import BookTimeSlots from "./components/Booking/BookTimeSlots";
 import Address from "./components/Address/Address";
 import NavBar from "./components/NavBar/NavBar";
-import './App.css';
+import "./App.css";
 
 function App() {
   const router = createBrowserRouter([
@@ -47,11 +47,13 @@ function App() {
     },
   ]);
   return (
-    <Provider store={store}>
-      <AuthContextProvider>
-        <RouterProvider router={router} />
-      </AuthContextProvider>
-    </Provider>
+    <div className="container">
+      <Provider store={store}>
+        <AuthContextProvider>
+          <RouterProvider router={router} />
+        </AuthContextProvider>
+      </Provider>
+    </div>
   );
 }
 

@@ -22,10 +22,8 @@ function Home() {
 
   return (
     <>
-    <div className="container">
       <WashCategories />
       <WashableItems />
-    </div>
     </>
   );
 }

@@ -3,8 +3,6 @@ import './NavBar.css';
 
 function NavBar() {
   return (
-    <div className="container">
-
     <nav className="nav-bar">
       <ul >
         <li>
@@ -24,7 +22,6 @@ function NavBar() {
         </li>
       </ul>
     </nav>
-    </div>
   );
 }
 

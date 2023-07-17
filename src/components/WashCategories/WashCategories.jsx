@@ -25,10 +25,9 @@ function WashCategories() {
   }
 
   return (
-    <div className="catogery-container">
+    <>
       <h3 className="heading">WashCategories</h3>
       {allCategories.length && (
-        <div>
           <ul className="ul-cls">
             {allCategories.map((category) => {
               const isActive = selectedCategory?.id === category.id;
@@ -37,7 +36,6 @@ function WashCategories() {
                   <button
                     className={`btn-cls ${isActive && "active"}`}
                     onClick={() => handleCategorySelect(category)}
-                    style={{ marginTop: 5 }}
                   >
                     <span className="centered-text">{category.name}</span>
                     <span className="small-right-text">
@@ -48,9 +46,8 @@ function WashCategories() {
               );
             })}
           </ul>
-        </div>
       )}
-    </div>
+    </>
   );
 }
 

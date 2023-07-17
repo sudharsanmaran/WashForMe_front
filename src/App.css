@@ -6,7 +6,26 @@
 
   .container{
     position: relative;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding-left: 10%;
+    padding-right: 10%;
   }
   
+  *{
+    padding: 5px;
+    margin: 0;
+    box-sizing: 0;
+  }
+
+  @media (max-width:750px) {
+    .container{
+      position: relative;
+      padding-left: 1%;
+      padding-right: 1%;
+      border: 1px solid red;
+    }
+
+    *{
+      padding: 1%;
+    }
+    
+  }
