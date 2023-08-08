@@ -4,6 +4,7 @@ import { fetchWashItem } from "../../store/WashItemSlice";
 import { asyncAddToCart, fetchCartItems } from "../../store/CartItemSlice";
 import "./WashableItems.css";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import stars from "./stars.png";
 
 function WashableItems() {
   const dispatch = useDispatch();
@@ -33,21 +34,28 @@ function WashableItems() {
           {items.map((item) => {
             return (
               <li key={item.id}>
-                <div className="card">
-                  <img src={item.image} />
-                  <div className="card-info-container">
-                    <div>
-                      <div className="item-name">{item.name}</div>
-                      <div
-                        className="item-price"
-                        style={{ marginRight: 10, marginBottom: 5 }}
-                      >
-                        ${" "}
-                        {selectedCategory
-                          ? Number(item.price) +
-                            Number(selectedCategory.extra_per_item)
-                          : item.price}
+                <div className="card occupy-full">
+                  <div style={{ width: "100%", height: "60%" }}>
+                    <div className="oval-img-border">
+                      <div className="img-container">
+                        <img src={item.image} />
                       </div>
+                    </div>
+                    <div className="star-dsgn">
+                      <img src={stars} />
+                    </div>
+                  </div>
+                  <div className="card-info-container occupy-full">
+                    <div className="item-name">{item.name}</div>
+                    <div
+                      className="item-price"
+                      style={{ marginRight: 10, marginBottom: 5 }}
+                    >
+                      ${" "}
+                      {selectedCategory
+                        ? Number(item.price) +
+                          Number(selectedCategory.extra_per_item)
+                        : item.price}
                     </div>
 
                     <div className="cart-btn-container">
@@ -60,7 +68,6 @@ function WashableItems() {
                     </div>
                   </div>
                 </div>
-                <br />
               </li>
             );
           })}

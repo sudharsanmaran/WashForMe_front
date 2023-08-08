@@ -1,68 +1,97 @@
 .item-ul-cls {
-    padding: 0px;
-    display: flex;
-    flex-wrap: wrap;
-    height: 600px;
-    justify-content: space-evenly;
-    align-items: center;
-    overflow: auto;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1%;
+  height: 600px;
+  justify-content: space-evenly;
+  overflow: auto;
+  flex-direction: row;
 }
 
 .item-ul-cls li {
   padding: 0;
-  margin: 5px;
+  margin: 0;
   list-style: none;
+  height: 150px;
+  width: 150px;
 }
 
-
 .card {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid #4890c7;
-    border-radius: 25%;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  border: 2px solid #4890c7;
+  border-radius: 0 30% 30% 30%;
+  background: aquamarine;
+  z-index: -5;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .card img {
-    max-width: 220px;
-    max-height: 220px;
-    padding: 10px;
+  max-width: 100%;
+  max-height: 100%;
 }
 .card-info-container {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    align-content: center;
-    justify-content: space-evenly;
-    align-items: center;
+  position: inherit;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  height: 40%;
+  width: 100%;
 }
 
 .item-name {
-    height: 20%;
-
+  height: 20%;
 }
 
 .item-price {
-
 }
-.cart-btn-container{
-
+.cart-btn-container {
+  padding-right: 17%;
+  padding-top: 0%;
+}
+.oval-img-border {
+  position: relative;
+  background: yellow;
+  z-index: -1;
+  left: -29%;
+  bottom: 10%;
+  border: 1px solid red;
+  transform: rotate(40deg);
+  height: 70%;
+  width: 90%;
+  border-radius: 90px;
+}
+.cart-btn {
+  border: 1px;
+  background-color: #4890c7;
+  color: aliceblue;
+  border-radius: 10px;
 }
 
-.cart-btn{
-    border: 1px;
-    background-color: #4890c7;
-    color: aliceblue;
-    border-radius: 10px;
+.star-dsgn {
+  position: relative;
+  left: 64%;
+  top: -58%;
+  z-index: 10;
+  height: 50px;
+  width: 50px;
 }
 
-@media (max-width:750px) {
-    .card img {
-        max-width: 150px;
-        max-height: 150px;
-        padding: 5px;
-    }
-    /* .item-price {
-        max-width: ;
-    }
-     */
-  }
+.img-container {
+  transform: rotate(-40deg);
+  border: 1px solid green;
+  z-index: 20;
+  position: relative;
+  height: 60px;
+  width: 60px;
+  top: -2%;
+  left: 36%;
+  padding: 3px;
+}

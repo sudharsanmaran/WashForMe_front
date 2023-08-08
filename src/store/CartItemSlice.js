@@ -28,8 +28,8 @@ export const postaddToCart = createAsyncThunk(
 
 export const patchCart = createAsyncThunk(
   "cartItem/patchCart",
-  async ({patch_data, cartItemId}) => {
-    return PrivateApi.patch(CART_ITEMS_URL+`${cartItemId}`, patch_data).then(
+  async ({ patch_data, cartItemId }) => {
+    return PrivateApi.patch(CART_ITEMS_URL + `${cartItemId}`, patch_data).then(
       (response) => response.data
     );
   }
@@ -43,21 +43,21 @@ export const asyncAddToCart = createAsyncThunk(
       wash_category: wash_category.id,
       quantity: 1,
     };
-    console.log(post_data, "postAddToCart");
-    dispatch(postaddToCart(post_data)
-    ).then(() => dispatch(fetchCartItems()));
+    dispatch(postaddToCart(post_data)).then(() => dispatch(fetchCartItems()));
   }
 );
 
 export const asyncRemoveFromCart = createAsyncThunk(
   "cartItem/handleRemoveFromCart",
-  async ({cartItem, dispatch}) => {
+  async ({ cartItem, dispatch }) => {
     const patch_data = {
       item: cartItem.item.id,
       wash_category: cartItem.wash_category.id,
       quantity: cartItem.quantity - 1,
     };
-    dispatch(patchCart({patch_data, cartItemId: cartItem.id})).then(() => dispatch(fetchCartItems()));
+    dispatch(patchCart({ patch_data, cartItemId: cartItem.id })).then(() =>
+      dispatch(fetchCartItems())
+    );
   }
 );
 
